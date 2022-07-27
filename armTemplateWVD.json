@@ -31,7 +31,7 @@
             "identity": {
                 "type": "UserAssigned",
                         "userAssignedIdentities": {
-                        "/subscriptions/d5685020-b28b-43b7-bb32-9e759cb13cd2/resourcegroups/avdImageDemoRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aibIdentity1": {}
+                        "<imgBuilderId>": {}
                             
                     }
                     },
@@ -55,7 +55,13 @@
             "customize": [
 
         
-              
+                    {
+                        "type": "PowerShell",
+                        "name": "installFsLogix",
+                        "runElevated": true,
+                        "runAsSystem": true,
+                        "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/0_installConfFsLogix.ps1"
+                    },
                     {
                         "type": "PowerShell",
                         "name": "OptimizeOS",
@@ -68,8 +74,18 @@
                         "restartCheckCommand": "write-host 'restarting post Optimizations'",
                         "restartTimeout": "5m"
                     },
-              
-             
+                    {
+                        "type": "PowerShell",
+                        "name": "Install Teams",
+                        "runElevated": true,
+                        "runAsSystem": true,
+                        "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/2_installTeams.ps1"
+                    },
+                    {
+                        "type": "WindowsRestart",
+                        "restartCheckCommand": "write-host 'restarting post Teams Install'",
+                        "restartTimeout": "5m"
+                    },
                         
                     {
                         "type": "WindowsUpdate",
@@ -86,14 +102,14 @@
             [
                 {   
                     "type": "SharedImage",
-                    "galleryImageId": "/subscriptions/d5685020-b28b-43b7-bb32-9e759cb13cd2/resourceGroups/avdImageDemoRg/providers/Microsoft.Compute/galleries/myaibsig02/images/win10avd",
-                    "runOutputName": "sigOutput",
+                    "galleryImageId": "/subscriptions/<subscriptionID>/resourceGroups/<rgName>/providers/Microsoft.Compute/galleries/<sharedImageGalName>/images/<imageDefName>",
+                    "runOutputName": "<runOutputName>",
                     "artifactTags": {
                         "source": "wvd10",
                         "baseosimg": "windows10"
                     },
                     "replicationRegions": [
-                      "eastus"
+                      "<region1>"
 
                     ]
                 }
@@ -103,11 +119,5 @@
 
     
     ]
-}    
-
-
-
-
-
-
+} 
 

@@ -49,19 +49,13 @@
                 "type": "PlatformImage",
                     "publisher": "MicrosoftWindowsDesktop",
                     "offer": "windows-10",
-                    "sku": "20h1-ent",
+                    "sku": "win10-21h2-avd",
                     "version": "latest"
             },
             "customize": [
 
         
-                    {
-                        "type": "PowerShell",
-                        "name": "installFsLogix",
-                        "runElevated": true,
-                        "runAsSystem": true,
-                        "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/0_installConfFsLogix.ps1"
-                    },
+    
                     {
                         "type": "PowerShell",
                         "name": "OptimizeOS",
@@ -74,18 +68,8 @@
                         "restartCheckCommand": "write-host 'restarting post Optimizations'",
                         "restartTimeout": "5m"
                     },
-                    {
-                        "type": "PowerShell",
-                        "name": "Install Teams",
-                        "runElevated": true,
-                        "runAsSystem": true,
-                        "scriptUri": "https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/14_Building_Images_WVD/2_installTeams.ps1"
-                    },
-                    {
-                        "type": "WindowsRestart",
-                        "restartCheckCommand": "write-host 'restarting post Teams Install'",
-                        "restartTimeout": "5m"
-                    },
+             
+                   
                         
                     {
                         "type": "WindowsUpdate",

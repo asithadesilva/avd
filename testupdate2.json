@@ -1,0 +1,95 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "imageTemplateName": {
+        "type": "string"
+        },
+        "api-version": {
+          "type": "string"
+        },
+        "svclocation": {
+            "type": "string"
+        }
+    },
+    
+    "variables": {
+    },
+
+
+    "resources": [
+    {
+    "name": "[parameters('imageTemplateName')]",
+    "type": "Microsoft.VirtualMachineImages/imageTemplates",
+    "apiVersion": "[parameters('api-version')]",
+    "location": "[parameters('svclocation')]",
+    "dependsOn": [],
+    
+    "tags": {
+        "imagebuilderTemplate": "AzureVMImageBuilderSIGonSIG",
+        "userIdentity": "enabled"
+            },
+        "identity": {
+            "type": "UserAssigned",
+                    "userAssignedIdentities": {
+                        "/subscriptions/d5685020-b28b-43b7-bb32-9e759cb13cd2/resourcegroups/avdImageDemoRg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aibIdentity1": {}
+                        
+                }
+                        },
+        "properties": {
+    
+            "buildTimeoutInMinutes" : 200,
+            
+            "vmProfile": 
+                {
+                "vmSize": "Standard_D2_v2",
+                "osDiskSizeGB": 127
+                },
+
+            "source": {
+                "type": "SharedImageVersion",
+                    "imageVersionId": "/subscriptions/d5685020-b28b-43b7-bb32-9e759cb13cd2/resourceGroups/avdImageDemoRg/providers/Microsoft.Compute/galleries/myaibsig02/images/Windows10Pool-Prod/versions/0.0.3"
+                
+        },
+
+            "customize": [
+                {
+                    "type": "PowerShell",
+                    "name": "settingUpMgmtAgtPath",
+                    "inline": [
+                        "mkdir c:\\buildActions2",
+                        "echo Azure-Image-Builder-Was-Here  > c:\\buildActions2\\buildActionsOutput.txt" 
+                            ]
+                }
+
+                {
+                    "type": "WindowsUpdate",
+                    "searchCriteria": "IsInstalled=0",
+                    "filters": [
+                        "exclude:$_.Title -like '*Preview*'",
+                        "include:$true"
+                                ],
+                    "updateLimit": 40
+                }
+              
+            ],
+            "distribute": 
+            [
+                {   
+                    "type": "SharedImage",
+                    "galleryImageId": "/subscriptions/d5685020-b28b-43b7-bb32-9e759cb13cd2/resourceGroups/avdImageDemoRg/providers/Microsoft.Compute/galleries/myaibsig02/images/Windows10Pool-Prod",
+                    "runOutputName": "newimg",
+                    "artifactTags": {
+                        "source": "azureVmImageBuilder",
+                        "baseosimg": "windows10"
+                    },
+                    "replicationRegions": [
+                    "<region1>"
+                    
+                    ]
+                }
+            ]
+            }
+        }
+    ]
+}
